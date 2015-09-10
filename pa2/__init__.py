@@ -2,7 +2,7 @@
 # EECS 293
 # Assignment 2
 
-from AbstractProduct import AbstractProduct
-from Opod import Opod
-from ProductType import ProductType
-from SerialNumber import SerialNumber
+from abstract_product import AbstractProduct
+from opod import Opod
+from product_type import ProductType
+from serial_number import SerialNumber

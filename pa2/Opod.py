@@ -2,8 +2,8 @@
 # EECS 293
 # Assignment 2
 
-from AbstractProduct import AbstractProduct
-from ProductType import ProductType
+from abstract_product import AbstractProduct
+from product_type import ProductType
 
 class Opod(AbstractProduct):
     """Represent an oPod"""
@@ -13,19 +13,6 @@ class Opod(AbstractProduct):
         AbstractProduct.__init__(self, serial_number, description)
         self.product_type = ProductType.OPOD
         self.product_name = ProductType.OPOD.__str__()
-
-
-    def __eq__(self, other):
-        """Override the natural equality check such that
-        two Products are equal if they share the same serial number.
-        """
-        return self.serial_number == other.serial_number
-
-    def __hash__(self):
-        """Override the natural hash value such that
-        the hash of a product is determined by the serial number itself.
-        """
-        return hash(self.serial_number.serial_number)
 
     def __str__(self):
         """Print this Product such that the product name, serial number,
