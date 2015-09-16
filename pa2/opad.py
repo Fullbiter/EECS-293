@@ -30,4 +30,4 @@ class Opod(AbstractProduct):
         """Return true iff the serial number is even
         and its third bit is not set.
         """
-        return serial_number.is_even() and not serial_number.test_bit(2)
+        return serial_number.is_even() and serial_number.test_bit(2)

@@ -27,7 +27,8 @@ class Opod(AbstractProduct):
 
     @staticmethod
     def is_valid_serial_number(serial_number):
-        """Return true iff the serial number is even
-        and its third bit is not set.
+        """Return true iff the serial number is odd and
+        its greatest common denominator with 620 is greater than 42
         """
-        return serial_number.is_even() and not serial_number.test_bit(2)
+        return serial_number.is_odd() and
+               serial_number.gcd(SerialNumber(630)) > 42

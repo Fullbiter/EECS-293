@@ -5,8 +5,8 @@
 from abstract_product import AbstractProduct
 from product_type import ProductType
 
-class Opod(AbstractProduct):
-    """Represent an oPod"""
+class Owatch(AbstractProduct):
+    """Represent an oWatch"""
 
     def __init__(self, serial_number, description=None):
         """Initialize the attributes of this Opod"""
@@ -27,7 +27,9 @@ class Opod(AbstractProduct):
 
     @staticmethod
     def is_valid_serial_number(serial_number):
-        """Return true iff the serial number is even
-        and its third bit is not set.
+        """Return true iff the serial number is odd
+        and its greatest common denominator with 620 is above 14
+        and less than or equal to 42.
         """
-        return serial_number.is_even() and not serial_number.test_bit(2)
+        return serial_number.is_odd() and
+               14 < serial_number.gcd(SerialNumber(630)) <= 42

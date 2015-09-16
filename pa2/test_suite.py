@@ -18,11 +18,12 @@ class TestPA2(unittest.TestCase):
     description = ["plays music", "wifi enabled"]
     opod_d = Opod(serial_12, description)
 
-    #def test_product_type_instatiation(self):
-    #    """Test that a proper ProductType can be instantiated # Error is not
-    #    and that an unknown type cannot.                      # being caught
-    #    """                                                   # here
-    #    self.assertRaises(AttributeError, ProductType.FOO)
+    def test_product_type_instatiation(self):
+        """Test that a proper ProductType can be instantiated
+        and that an unknown type cannot.
+        """
+        with self.assertRaises(AttributeError):
+            ProductType.FOO
 
     def test_product_type_str(self):
         """Test that ProductType can return
@@ -58,13 +59,6 @@ class TestPA2(unittest.TestCase):
         """Test that is_odd() returns the correct boolean values."""
         self.assertFalse(self.serial_12.is_odd())
         self.assertTrue(self.serial_27.is_odd())
-
-    #def test_abstract_product_str(self):
-    #    """Test that __str__(), as an abstract method, # NonImplementedError
-    #    raises a NotImplementedErrorself.              # is not caught here
-    #    """                                            # for some reason.
-    #    with self.assertRaises(NotImplementedError):
-    #        AbstractProduct(self.serial_12)
 
     def test_opod_instantiation(self):
         """Test that all opod attributes are set correctly."""
