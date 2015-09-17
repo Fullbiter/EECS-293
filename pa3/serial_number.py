@@ -23,6 +23,10 @@ class SerialNumber:
         """
         return cmp(self.serial_number, other.serial_number)
 
+    def __str__(self):
+        """Return the SerialNumber as a string"""
+        return str(self.serial_number)
+
     def gcd(self, other):
         """Return the greatest common divisor of this SerialNumber
         and an other SerialNumber.

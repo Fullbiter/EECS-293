@@ -43,10 +43,17 @@ class AbstractProduct(object):
     @staticmethod
     def make(product_type, serial_number, description=None):
         """"""
-        product_class = eval(str(product_type)[12:].lower().capitalize())
+        # length of the name of the enum (e.g. ProductType is 11 chars long)
+        enum_name_length = len(str(product_type.__class__.__name__))
+        
+        # the class associated with the product type
+        product_class = eval(str(product_type) \
+                        [enum_name_length + 1:].lower().capitalize())
+
         if product_class.is_valid_serial_number(serial_number):
             return product_class(serial_number, description)
-        raise ProductError
+        raise ProductError(product_type, serial_number,
+                           ProductError.ErrorCode.INVALID_SERIAL_NUMBER)
 
 class Opod(AbstractProduct):
     """Represent an oPod"""
@@ -62,7 +69,7 @@ class Opod(AbstractProduct):
         and description (if applicable) are easily readable.
         """
         out = "{name}: Serial #{serial}".format(name=self.product_name,
-                                                serial=self.serial_number)
+                                                serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
                     out += "\n" + d.capitalize()
@@ -89,7 +96,7 @@ class Opad(AbstractProduct):
         and description (if applicable) are easily readable.
         """
         out = "{name}: Serial #{serial}".format(name=self.product_name,
-                                                serial=self.serial_number)
+                                                serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
                     out += "\n" + d.capitalize()
@@ -116,7 +123,7 @@ class Ophone(AbstractProduct):
         and description (if applicable) are easily readable.
         """
         out = "{name}: Serial #{serial}".format(name=self.product_name,
-                                                serial=self.serial_number)
+                                                serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
                     out += "\n" + d.capitalize()
@@ -144,7 +151,7 @@ class Owatch(AbstractProduct):
         and description (if applicable) are easily readable.
         """
         out = "{name}: Serial #{serial}".format(name=self.product_name,
-                                                serial=self.serial_number)
+                                                serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
                     out += "\n" + d.capitalize()
@@ -173,7 +180,7 @@ class Otv(AbstractProduct):
         and description (if applicable) are easily readable.
         """
         out = "{name}: Serial #{serial}".format(name=self.product_name,
-                                                serial=self.serial_number)
+                                                serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
                     out += "\n" + d.capitalize()
