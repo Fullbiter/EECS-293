@@ -13,87 +13,235 @@ from products import Owatch
 from products import Otv
 from serial_number import SerialNumber
 
-class TestPA3(unittest.TestCase):
+class TestProductType(unittest.TestCase):
+    """Run tests regarding ProductType."""
 
+    def test_get_name(self):
+        """Test the ability to retrieve the product name."""
+        self.assertEqual(ProductType.OPOD.value, "oPod")
+        self.assertEqual(ProductType.OPAD.value, "oPad")
+        self.assertEqual(ProductType.OPHONE.value, "oPhone")
+        self.assertEqual(ProductType.OWATCH.value, "oWatch")
+        self.assertEqual(ProductType.OTV.value, "oTv")
+
+    def test_enum(self):
+        """Test that only valid ProductTypes can be referenced."""
+        with self.assertRaises(AttributeError):
+            ProductType.INVALID
+
+class TestSerialNumber(unittest.TestCase):
+    """Run tests regarding SerialNumber."""
+
+    def test_get_serial_number(self):
+        """Test the ability to retrieve the serial number."""
+        s = SerialNumber(12)
+        self.assertEqual(s.serial_number, 12)
+        
+    def test_gcd(self):
+        """Test that the greatest common divisor is found correctly."""
+        s1 = SerialNumber(12)
+        s2 = SerialNumber(34)
+        self.assertEqual(s1.gcd(s2), 2)
+
+    def test_mod(self):
+        """Test that the modulus is found correctly."""
+        s1 = SerialNumber(12)
+        s2 = SerialNumber(34)
+        self.assertEqual(s1.mod(s2), 12)
+
+    def test_test_bit(self):
+        """Test that the truth value of a bit is found correctly."""
+        s = SerialNumber(12)
+        self.assertFalse(s.test_bit(0))
+        self.assertTrue(s.test_bit(2))
+
+    def test_is_even(self):
+        """Test that even serial numbers are identified."""
+        s1 = SerialNumber(12)
+        s2 = SerialNumber(27)
+        self.assertFalse(s2.is_even())
+        self.assertTrue(s1.is_even())
+
+    def test_is_odd(self):
+        """Test that odd serial numbers are identified."""
+        s1 = SerialNumber(12)
+        s2 = SerialNumber(27)
+        self.assertFalse(s1.is_odd())
+        self.assertTrue(s2.is_odd())
+
+    def test_ordering(self):
+        """Test that serial numbers are ordered by their numbers."""
+        s1 = SerialNumber(12)
+        s2 = SerialNumber(27)
+        s3 = SerialNumber(34)
+        s_all = [s3, s1, s2]    # note the order
+        self.assertEqual(sorted(s_all), [s1, s2, s3])
+
+class TestProductError(unittest.TestCase):
+    """Run tests regarding ProductError."""
+
+    pt = ProductType.OPOD
+    sn = SerialNumber(12)
+    ec = ProductError.ErrorCode(1)
+    err = ProductError(pt, sn, ec)
+
+    def test_get_product_type(self):
+        """Test the ability to retrieve the product type."""
+        self.assertEqual(self.err.product_type, self.pt)
+
+    def test_get_product_name(self):
+        """Test the ability to retrieve the product name."""
+        self.assertEqual(self.err.product_name, self.pt.value)
+
+    def test_get_serial_number(self):
+        """Test the ability to retrieve the serial number."""
+        self.assertEqual(self.err.serial_number, self.sn)
+
+    def test_get_error_code(self):
+        """Test the ability to retrieve the error code."""
+        self.assertEqual(self.err.error_code, self.ec)
+
+class TestProducts(unittest.TestCase):
+    """Run tests regarding all Products."""
+
+    # Valid serial numbers for each product
     VALID_OPOD = SerialNumber(8)
     VALID_OPAD = SerialNumber(4)
     VALID_OPHONE = SerialNumber(45)
     VALID_OWATCH = SerialNumber(15)
     VALID_OTV = SerialNumber(1)
 
-    def test_enum(self):
-        """Test that an unknown ProductType cannot be instantiated"""
-        with self.assertRaises(AttributeError):
-            ProductType.INVALID
-        
-    def test_serial_number_gcd(self):
-        """Test that gcd() returns the correct greatest common divisor."""
-        self.assertEqual(SerialNumber(12).gcd(SerialNumber(34)), 2)
+    desc = ["Description A", "Description B"]
 
-    def test_serial_number_mod(self):
-        """Test that mod() returns the correct modulus."""
-        self.assertEqual(SerialNumber(12).mod(SerialNumber(34)), 12)
+    # Product objects with descriptions
+    opod_d = Opod(VALID_OPOD, desc)
+    opad_d = Opad(VALID_OPAD, desc)
+    ophone_d = Ophone(VALID_OPHONE, desc)
+    owatch_d = Owatch(VALID_OWATCH, desc)
+    otv_d = Otv(VALID_OTV, desc)
 
-    def test_serial_number_testBit(self):
-        """Test that testBit() returns the correct boolean values."""
-        self.assertFalse(SerialNumber(12).test_bit(0))
-        self.assertTrue(SerialNumber(12).test_bit(2))
+    # Product objects with no description
+    opod_n = Opod(VALID_OPOD)
+    opad_n = Opad(VALID_OPAD)
+    ophone_n = Ophone(VALID_OPHONE)
+    owatch_n = Owatch(VALID_OWATCH)
+    otv_n = Otv(VALID_OTV)
 
-    def test_serial_number_is_even(self):
-        """Test that is_even() returns the correct boolean values."""
-        self.assertTrue(SerialNumber(12).is_even())
-        self.assertFalse(SerialNumber(27).is_even())
+    def test_get_serial_number(self):
+        """Test the ability to retrieve the serial number."""
+        self.assertEqual(self.opod_n.serial_number, self.VALID_OPOD)
+        self.assertEqual(self.opad_n.serial_number, self.VALID_OPAD)
+        self.assertEqual(self.ophone_n.serial_number, self.VALID_OPHONE)
+        self.assertEqual(self.owatch_n.serial_number, self.VALID_OWATCH)
+        self.assertEqual(self.otv_n.serial_number, self.VALID_OTV)
 
-    def test_serial_number_is_odd(self):
-        """Test that is_odd() returns the correct boolean values."""
-        self.assertFalse(SerialNumber(12).is_odd())
-        self.assertTrue(SerialNumber(27).is_odd())
+    def test_get_product_type(self):
+        """Test the ability to retrieve the product type."""
+        self.assertEqual(self.opod_n.product_type, ProductType.OPOD)
+        self.assertEqual(self.opad_n.product_type, ProductType.OPAD)
+        self.assertEqual(self.ophone_n.product_type, ProductType.OPHONE)
+        self.assertEqual(self.owatch_n.product_type, ProductType.OWATCH)
+        self.assertEqual(self.otv_n.product_type, ProductType.OTV)
 
-    def test_product_instantiation(self):
-        """Test that all opod attributes are set correctly."""
-        opod = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD, ["Description"])
-        self.assertEqual(opod.serial_number, self.VALID_OPOD)
-        self.assertEqual(opod.description, ["Description"])
-        self.assertEqual(opod.product_type, ProductType.OPOD)
-        self.assertEqual(opod.product_name, str(ProductType.OPOD))
+    def test_get_product_name(self):
+        """Test the ability to retrieve the product name."""
+        self.assertEqual(self.opod_n.product_name, ProductType.OPOD.value)
+        self.assertEqual(self.opad_n.product_name, ProductType.OPAD.value)
+        self.assertEqual(self.ophone_n.product_name, ProductType.OPHONE.value)
+        self.assertEqual(self.owatch_n.product_name, ProductType.OWATCH.value)
+        self.assertEqual(self.otv_n.product_name, ProductType.OTV.value)
 
-    def test_product_eq(self):
-        """Test that two products are equal if they share
-        the same serial number, regardless of other fields.
-        """
-        opod_d = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD, ["Description"])
-        opod_n = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD)
-        self.assertEqual(opod_d, opod_n)
-
-    def test_product_hash(self):
-        """Test that two products share the same hash code if they
-        share the same serial number, regardless of other fields.
-        """
-        opod_d = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD, ["Description"])
-        opod_n = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD)
-        self.assertEqual(hash(opod_d), hash(opod_n))
-
-    def test_product_str(self):
-        """Test that str() formats name, serial number,
-        and descriptions correctly.
-        """
-        opod_d = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD, ["Description"])
-        opod_n = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD)
-        self.assertEqual(str(opod_n), "ProductType.OPOD: Serial #8")
-        self.assertEqual(str(opod_d), "ProductType.OPOD: Serial #8\nDescription")
+    def test_get_description(self):
+        """Test the ability to retrieve the product description."""
+        self.assertEqual(self.opod_d.description, self.desc)
+        self.assertEqual(self.opad_d.description, self.desc)
+        self.assertEqual(self.ophone_d.description, self.desc)
+        self.assertEqual(self.owatch_d.description, self.desc)
+        self.assertEqual(self.otv_d.description, self.desc)
 
     def test_is_valid_serial_number(self):
-        """Test that valid serial numbers return True"""
+        """Test that valid serial numbers are identified."""
         self.assertTrue(Opod.is_valid_serial_number(self.VALID_OPOD))
         self.assertTrue(Opad.is_valid_serial_number(self.VALID_OPAD))
         self.assertTrue(Ophone.is_valid_serial_number(self.VALID_OPHONE))
         self.assertTrue(Owatch.is_valid_serial_number(self.VALID_OWATCH))
         self.assertTrue(Otv.is_valid_serial_number(self.VALID_OTV))
 
+    def test_equality(self):
+        """Test that two products are equal if they share
+        the same serial number, regardless of other fields.
+        """
+        self.assertEqual(self.opod_d, self.opod_n)
+        self.assertEqual(self.opad_d, self.opad_n)
+        self.assertEqual(self.ophone_d, self.ophone_n)
+        self.assertEqual(self.owatch_d, self.owatch_n)
+        self.assertEqual(self.otv_d, self.otv_n)
+
+    def test_hash(self):
+        """Test that two products share the same has code if they
+        share the same serial number, regardless of other fields.
+        """
+        self.assertEqual(hash(self.opod_d), hash(self.opod_n))
+        self.assertEqual(hash(self.opad_d), hash(self.opad_n))
+        self.assertEqual(hash(self.ophone_d), hash(self.ophone_n))
+        self.assertEqual(hash(self.owatch_d), hash(self.owatch_n))
+        self.assertEqual(hash(self.otv_d), hash(self.otv_n))
+
+class TestAbstractProduct(unittest.TestCase):
+    """Run tests regarding AbstractProduct."""
+
+    # Valid serial numbers for each product
+    VALID_OPOD = SerialNumber(8)
+    VALID_OPAD = SerialNumber(4)
+    VALID_OPHONE = SerialNumber(45)
+    VALID_OWATCH = SerialNumber(15)
+    VALID_OTV = SerialNumber(1)
+
+    # Products instantiated directly
+    opod = Opod(VALID_OPOD)
+    opad = Opad(VALID_OPAD)
+    ophone = Ophone(VALID_OPHONE)
+    owatch = Owatch(VALID_OWATCH)
+    otv = Otv(VALID_OTV)
+
+    def test_make(self):
+        """Test that the factory method correctly makes a product."""
+        
+        # Products instantiated by the factory method
+        opod_f = AbstractProduct.make(ProductType.OPOD, self.VALID_OPOD)
+        opad_f = AbstractProduct.make(ProductType.OPAD, self.VALID_OPAD)
+        ophone_f = AbstractProduct.make(ProductType.OPHONE, self.VALID_OPHONE)
+        owatch_f = AbstractProduct.make(ProductType.OWATCH, self.VALID_OWATCH)
+        otv_f = AbstractProduct.make(ProductType.OTV, self.VALID_OTV)
+
+        self.assertEqual(self.opod, opod_f)
+        self.assertEqual(self.opad, opad_f)
+        self.assertEqual(self.ophone, ophone_f)
+        self.assertEqual(self.owatch, owatch_f)
+        self.assertEqual(self.otv, otv_f)
+
     def test_make_error(self):
-        """Test that an erroneous SerialNumber raises an exception"""
+        """Test that a product cannot be made with
+        an invalid serial number or product type.
+        """
         with self.assertRaises(ProductError):
-            opod_n = AbstractProduct.make(ProductType.OPOD, SerialNumber(-1))
+            AbstractProduct.make(ProductType.OPOD, SerialNumber(0))
+        with self.assertRaises(ProductError):
+            AbstractProduct.make(ProductType.OPAD, SerialNumber(0))
+        with self.assertRaises(ProductError):
+            AbstractProduct.make(ProductType.OPHONE, SerialNumber(0))
+        with self.assertRaises(ProductError):
+            AbstractProduct.make(ProductType.OWATCH, SerialNumber(0))
+        with self.assertRaises(ProductError):
+            AbstractProduct.make(ProductType.OTV, SerialNumber(0))
+        
+        with self.assertRaises(AttributeError):
+            AbstractProduct.make(ProductType.INVALID, SerialNumber(0))
+
+    def test_abstract(self):
+        """Test that AbstractProduct cannot be instantiated."""
+        with self.assertRaises(TypeError):
+            ap = AbstractProduct(0)
 
 if __name__ == '__main__':
     unittest.main()

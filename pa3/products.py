@@ -24,10 +24,8 @@ class AbstractProduct(object):
         return self.serial_number == other.serial_number
 
     def __ne__(self, other):
-        """Override the natural equality check such that two Products are
-        not equal if they do not share the same serial number.
-        """
-        return not __eq__(self, other)
+        """Define inequality. See __eq__."""
+        return self == other
 
     def __hash__(self):
         """Override the natural hash value such that
@@ -37,18 +35,14 @@ class AbstractProduct(object):
 
     @abc.abstractmethod
     def __str__(self):
+        """Enforce the abstract quality of AbstractProduct."""
         raise NotImplementedError
-
     
     @staticmethod
     def make(product_type, serial_number, description=None):
-        """"""
-        # length of the name of the enum (e.g. ProductType is 11 chars long)
-        enum_name_length = len(str(product_type.__class__.__name__))
-        
-        # the class associated with the product type
-        product_class = eval(str(product_type) \
-                        [enum_name_length + 1:].lower().capitalize())
+        """Make a Product iff all attributes are valid."""
+        # cache the class associated with the product type
+        product_class = eval(product_type.name.lower().capitalize())
 
         if product_class.is_valid_serial_number(serial_number):
             return product_class(serial_number, description)
@@ -62,13 +56,13 @@ class Opod(AbstractProduct):
         """Initialize the attributes of this Opod"""
         AbstractProduct.__init__(self, serial_number, description)
         self.product_type = ProductType.OPOD
-        self.product_name = str(ProductType.OPOD)
+        self.product_name = ProductType.OPOD.value
 
     def __str__(self):
         """Print this Product such that the product name, serial number,
         and description (if applicable) are easily readable.
         """
-        out = "{name}: Serial #{serial}".format(name=str(self.product_name),
+        out = "{name}: Serial #{serial}".format(name=self.product_name,
                                                 serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
@@ -89,13 +83,13 @@ class Opad(AbstractProduct):
         """Initialize the attributes of this Opad"""
         AbstractProduct.__init__(self, serial_number, description)
         self.product_type = ProductType.OPAD
-        self.product_name = str(ProductType.OPAD)
+        self.product_name = ProductType.OPAD.value
 
     def __str__(self):
         """Print this Product such that the product name, serial number,
         and description (if applicable) are easily readable.
         """
-        out = "{name}: Serial #{serial}".format(name=str(self.product_name),
+        out = "{name}: Serial #{serial}".format(name=self.product_name,
                                                 serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
@@ -116,13 +110,13 @@ class Ophone(AbstractProduct):
         """Initialize the attributes of this Ophone"""
         AbstractProduct.__init__(self, serial_number, description)
         self.product_type = ProductType.OPHONE
-        self.product_name = str(ProductType.OPHONE)
+        self.product_name = ProductType.OPHONE.value
 
     def __str__(self):
         """Print this Product such that the product name, serial number,
         and description (if applicable) are easily readable.
         """
-        out = "{name}: Serial #{serial}".format(name=str(self.product_name),
+        out = "{name}: Serial #{serial}".format(name=self.product_name,
                                                 serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
@@ -144,13 +138,13 @@ class Owatch(AbstractProduct):
         """Initialize the attributes of this Opod"""
         AbstractProduct.__init__(self, serial_number, description)
         self.product_type = ProductType.OWATCH
-        self.product_name = str(ProductType.OWATCH)
+        self.product_name = ProductType.OWATCH.value
 
     def __str__(self):
         """Print this Product such that the product name, serial number,
         and description (if applicable) are easily readable.
         """
-        out = "{name}: Serial #{serial}".format(name=str(self.product_name),
+        out = "{name}: Serial #{serial}".format(name=self.product_name,
                                                 serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
@@ -173,13 +167,13 @@ class Otv(AbstractProduct):
         """Initialize the attributes of this Otv"""
         AbstractProduct.__init__(self, serial_number, description)
         self.product_type = ProductType.OTV
-        self.product_name = str(ProductType.OTV)
+        self.product_name = ProductType.OTV.value
 
     def __str__(self):
         """Print this Product such that the product name, serial number,
         and description (if applicable) are easily readable.
         """
-        out = "{name}: Serial #{serial}".format(name=str(self.product_name),
+        out = "{name}: Serial #{serial}".format(name=self.product_name,
                                                 serial=str(self.serial_number))
         if self.description != None:
             for d in self.description:
