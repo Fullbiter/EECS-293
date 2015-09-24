@@ -1,16 +1,28 @@
 # Kevin Nash (kjn33)
 # EECS 293
-# Assignment 3
+# Assignment 4
 
 import unittest
+
+from exchange import Exchange
+
 from product_error import ProductError
+
 from product_type import ProductType
+
 from products import AbstractProduct
 from products import Opod
 from products import Opad
 from products import Ophone
 from products import Owatch
 from products import Otv
+
+from request import Request
+
+from request_error import RequestError
+
+from refund import Refund
+
 from serial_number import SerialNumber
 
 class TestProductType(unittest.TestCase):
@@ -221,7 +233,8 @@ class TestAbstractProduct(unittest.TestCase):
         self.assertEqual(self.otv, otv_f)
 
     def test_make_error(self):
-        """Test that a product cannot be made with
+        """
+        Test that a product cannot be made with
         an invalid serial number or product type.
         """
         with self.assertRaises(ProductError):
@@ -239,9 +252,50 @@ class TestAbstractProduct(unittest.TestCase):
             AbstractProduct.make(ProductType.INVALID, SerialNumber(0))
 
     def test_abstract(self):
-        """Test that AbstractProduct cannot be instantiated."""
+        """Test that AbstractProduct cannot be instantiated"""
         with self.assertRaises(TypeError):
             ap = AbstractProduct(0)
+
+class TestRequest(unittest.TestCase):
+    """Run tests regarding Request"""
+
+    def test_abstract(self):
+        """Test that Request cannot be instantiated"""
+        with self.assertRaises(TypeError):
+            r = Request()
+
+class TestExchange(unittest.TestCase):
+    """Run tests regarding Exchange"""
+
+    s1 = SerialNumber(1)
+    s2 = SerialNumber(2)
+    s3 = SerialNumber(3)
+    s4 = SerialNumber(4)
+
+    def test_immutability(self):
+        """Test that an Exchange is not affected by changes to its builder"""
+        # Build with serial numbers 1 and 2
+        builder = Exchange.Builder()
+        builder.add_compatible(self.s1).add_compatible(self.s2)
+        exchange = builder.build()
+        # Add serial number 3 without building
+        builder.add_compatible(self.s3)
+
+        self.assertEqual(exchange.compatible_products, {self.s1, self.s2})
+
+        products = exchange.get_compatible_products()
+        products.add(self.s4)
+
+        self.assertEqual(exchange.compatible_products, {self.s1, self.s2})
+
+class TestRefund(unittest.TestCase):
+    """Run tests regarding Refund"""
+
+    def test_invalid_rma(self):
+        """Test that invalid RMA codes are not processed"""
+        builder = Refund.Builder()
+        with self.assertRaises(RequestError):
+            builder.set_rma(None)
 
 if __name__ == '__main__':
     unittest.main()
