@@ -16,6 +16,10 @@ II. Explanation of Design Choices
             do not appear in this code are purposefully omitted because
             their function is accomplished with attribute access.
 
+        2.  The assignment's specification for package-private constructors
+            is ignored by this code, as the Python language does not
+            feature such access control.
+
     B.  Product class
 
         1.  product.py has been removed from the package,
