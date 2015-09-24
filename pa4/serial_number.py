@@ -1,6 +1,6 @@
 # Kevin Nash (kjn33)
 # EECS 293
-# Assignment 3
+# Assignment 4
 
 from fractions import gcd
 from product_error import ProductError

@@ -1,6 +1,6 @@
 # Kevin Nash (kjn33)
 # EECS 293
-# Assignment 3
+# Assignment 4
 
 import abc
 from exchange import Exchange
