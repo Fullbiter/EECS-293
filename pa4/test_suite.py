@@ -298,7 +298,7 @@ class TestRefund(unittest.TestCase):
             builder.set_rma(None)
 
     def test_rma(self):
-        """"""
+        """Test that valid RMA codes can be processed"""
         builder = Refund.Builder()
         builder.set_rma(9999999999)
 
