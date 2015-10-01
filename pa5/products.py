@@ -45,9 +45,9 @@ class AbstractProduct(object):
     
     def process(self, request, status):
         """Delegate request processing to the appropriate method"""
-        if request is Exchange:
+        if isinstance(request, Exchange):
             self.processExchange(request, status)
-        elif request is Refund:
+        elif isinstance(request, Refund):
             self.processRefund(request, status)
         else:
             raise ProductError(ProductType.OPOD, self.serial_number,
@@ -121,7 +121,7 @@ class Opod(AbstractProduct):
     def processExchange(self, exchange, status):
         """Process exchanges"""
 
-        serial_set = get_compatible_products()
+        serial_set = exchange.get_compatible_products()
 
         if serial_set:
             status.status_code = RequestStatus.StatusCode.OK

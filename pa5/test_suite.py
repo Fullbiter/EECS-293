@@ -201,27 +201,6 @@ class TestProducts(unittest.TestCase):
         self.assertEqual(hash(self.owatch_d), hash(self.owatch_n))
         self.assertEqual(hash(self.otv_d), hash(self.otv_n))
 
-    def test_opod_requests(self):
-        """Test that refunds and exchanges are handled correctly"""
-        rma = 48
-
-
-    def test_opad_requests(self):
-        """Test that refunds and exchanges are handled correctly"""
-        pass
-
-    def test_ophone_requests(self):
-        """Test that refunds and exchanges are handled correctly"""
-        pass
-
-    def test_owatch_requests(self):
-        """Test that refunds and exchanges are handled correctly"""
-        pass
-
-    def test_otv_requests(self):
-        """Test that refunds and exchanges are handled correctly"""
-        pass
-
 class TestAbstractProduct(unittest.TestCase):
     """Run tests regarding AbstractProduct."""
 
@@ -310,6 +289,19 @@ class TestExchange(unittest.TestCase):
         products.add(self.s4)
 
         self.assertEqual(exchange.compatible_products, {self.s1, self.s2})
+
+    def test_opad_exchange(self):
+        """Test that opad exchanges are handled correctly"""
+        opad1048 = Opad(SerialNumber(1048))
+        opad1244 = Opad(SerialNumber(1244))
+        status = RequestStatus()
+        builder = Exchange.Builder()
+        builder.add_compatible(opad1244.serial_number)
+        exchange = builder.build()
+
+        exchange.process(opad1048, status)
+
+        self.assertEqual(status.status_code, RequestStatus.StatusCode.OK)
 
 class TestRefund(unittest.TestCase):
     """Run tests regarding Refund"""

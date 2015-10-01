@@ -16,5 +16,5 @@ class RequestStatus(Exception):
 
     def __init__(self):
         """Initialize the properties of a ProductError."""
-        self.status_code = StatusCode.UNKNOWN
+        self.status_code = RequestStatus.StatusCode.UNKNOWN
         self.result = None
