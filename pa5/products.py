@@ -124,8 +124,8 @@ class Opod(AbstractProduct):
         serial_set = get_compatible_products()
 
         if serial_set:
-            status = request_status.OK
-            self.serial_number = serial_set.pop()
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = serial_set.pop()
 
     def processRefund(self, refund, status):
         """Process refunds"""
@@ -133,8 +133,8 @@ class Opod(AbstractProduct):
         GCD_MIN = 24
 
         if self.serial_number.gcd(refund.rma) >= GCD_MIN:
-            status = request_status.OK
-            self.serial_number = None
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = None
         else:
             pass # I'd like to raise an exception, but one isn't specified
 
@@ -177,8 +177,8 @@ class Opad(AbstractProduct):
                 best_fit_serial = candidate
 
         if best_fit_serial > SerialNumber(0):
-            status = request_status.OK
-            self.serial_number = best_fit_serial
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = best_fit_serial
 
     def processRefund(self, refund, status):
         """Process refunds"""
@@ -186,8 +186,8 @@ class Opad(AbstractProduct):
         GCD_MIN = 12
 
         if self.serial_number.gcd(request.rma) >= GCD_MIN:
-            status = request_status.OK
-            self.serial_number = None
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = None
         else:
             pass # I'd like to raise an exception, but one isn't specified
 
@@ -234,16 +234,16 @@ class Ophone(AbstractProduct):
                 best_fit_serial = candidate
 
         if best_fit_serial > self.serial_number:
-            status = request_status.OK
-            self.serial_number = best_fit_serial
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = best_fit_serial
 
     def processRefund(self, refund, status):
         """Process refunds"""
         # make three attempts at bit shifting
         for n in range(3):
             if refund.rma << n + 1 == self.serial_number:
-                status = request_status.OK
-                self.serial_number = None
+                status.status_code = RequestStatus.StatusCode.OK
+                status.result = None
                 break
         else:
             pass # I'd like to raise an exception, but one isn't specified
@@ -289,8 +289,8 @@ class Owatch(AbstractProduct):
                 best_fit_serial = candidate
 
         if best_fit_serial > self.serial_number:
-            status = request_status.OK
-            self.serial_number = best_fit_serial
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = best_fit_serial
 
     def processRefund(self, refund, status):
         """Process refunds"""
@@ -298,8 +298,8 @@ class Owatch(AbstractProduct):
         XOR_MIN = 14
 
         if self.serial_number.serial_number ^ refund.rma > XOR_MIN:
-            status = request_status.OK
-            self.serial_number = None
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = None
         else:
             pass # I'd like to raise an exception, but one isn't specified
 
@@ -352,14 +352,14 @@ class Otv(AbstractProduct):
                 best_fit_serial = candidate
         
         if best_fit_serial > self.serial_number:
-            status = request_status.OK
-            self.serial_number = best_fit_serial
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = best_fit_serial
 
     def processRefund(self, refund, status):
         """Process refunds"""
         if refund.rma > 0:
-            status = request_status.OK
-            self.serial_number = None
+            status.status_code = RequestStatus.StatusCode.OK
+            status.result = None
         else:
             pass # I'd like to raise an exception, but one isn't specified
 

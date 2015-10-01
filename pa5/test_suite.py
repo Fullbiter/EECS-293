@@ -21,6 +21,8 @@ from requests import Request
 
 from request_error import RequestError
 
+from request_status import RequestStatus
+
 from serial_number import SerialNumber
 
 class TestProductType(unittest.TestCase):
@@ -178,7 +180,8 @@ class TestProducts(unittest.TestCase):
         self.assertTrue(Otv.is_valid_serial_number(self.VALID_OTV))
 
     def test_equality(self):
-        """Test that two products are equal if they share
+        """
+        Test that two products are equal if they share
         the same serial number, regardless of other fields.
         """
         self.assertEqual(self.opod_d, self.opod_n)
@@ -188,7 +191,8 @@ class TestProducts(unittest.TestCase):
         self.assertEqual(self.otv_d, self.otv_n)
 
     def test_hash(self):
-        """Test that two products share the same has code if they
+        """
+        Test that two products share the same has code if they
         share the same serial number, regardless of other fields.
         """
         self.assertEqual(hash(self.opod_d), hash(self.opod_n))
@@ -196,6 +200,27 @@ class TestProducts(unittest.TestCase):
         self.assertEqual(hash(self.ophone_d), hash(self.ophone_n))
         self.assertEqual(hash(self.owatch_d), hash(self.owatch_n))
         self.assertEqual(hash(self.otv_d), hash(self.otv_n))
+
+    def test_opod_requests(self):
+        """Test that refunds and exchanges are handled correctly"""
+        rma = 48
+
+
+    def test_opad_requests(self):
+        """Test that refunds and exchanges are handled correctly"""
+        pass
+
+    def test_ophone_requests(self):
+        """Test that refunds and exchanges are handled correctly"""
+        pass
+
+    def test_owatch_requests(self):
+        """Test that refunds and exchanges are handled correctly"""
+        pass
+
+    def test_otv_requests(self):
+        """Test that refunds and exchanges are handled correctly"""
+        pass
 
 class TestAbstractProduct(unittest.TestCase):
     """Run tests regarding AbstractProduct."""
