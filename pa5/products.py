@@ -72,6 +72,16 @@ class AbstractProduct(object):
         return serial_set
 
     @staticmethod
+    def discardGreaterElements(self, serial_set, max_val):
+        """
+        Remove from a SerialNumber set all elements above a maximum value
+        """
+        for candidate in serial_set:
+            if candidate > max_val:
+                serial_set.discard(candidate)
+        return serial_set
+
+    @staticmethod
     def computeSerialSetMean(self, serial_set):
         """Compute the average of a SerialNumber set"""
         return sum(s.serial_number for s in serial_set) / len(serial_set)
@@ -222,6 +232,7 @@ class Ophone(AbstractProduct):
         for candidate in serial_set:
             if  best_fit_serial < candidate < average:
                 best_fit_serial = candidate
+
         if best_fit_serial > self.serial_number:
             status = request_status.OK
             self.serial_number = best_fit_serial
@@ -326,14 +337,20 @@ class Otv(AbstractProduct):
     def processExchange(self, exchange, status):
         """Process exchanges"""
 
+        UPPER_MAX = 1024
+
         serial_set = Product.discardLesserElements( \
             exchange.get_compatible_products(), self.serial_number)
+        serial_set = Product.discardGreaterElements( \
+            serial_set, self.serial_number + UPPER_MAX)
+        
         average = Product.computeSerialSetMean(serial_set)
         best_fit_serial = self.serial_number
 
         for candidate in serial_set:
-            if  best_fit_serial < candidate <= self.serial_number + 1024:
+            if  best_fit_serial < candidate < average:
                 best_fit_serial = candidate
+        
         if best_fit_serial > self.serial_number:
             status = request_status.OK
             self.serial_number = best_fit_serial
