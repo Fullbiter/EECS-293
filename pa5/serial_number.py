@@ -36,7 +36,9 @@ class SerialNumber:
         Return the greatest common divisor of this SerialNumber
         and an other SerialNumber
         """
-        return gcd(self.serial_number, other.serial_number)
+        if other is SerialNumber:
+            return gcd(self.serial_number, other.serial_number)
+        return gcd(self.serial_number, other)
 
     def mod(self, other):
         """Return this SerialNumber modulus an other SerialNumber"""

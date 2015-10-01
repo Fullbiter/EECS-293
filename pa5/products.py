@@ -3,10 +3,10 @@
 # Assignment 4
 
 import abc
-from exchange import Exchange
 from product_error import ProductError
 from product_type import ProductType
-from refund import Refund
+from requests import Exchange
+from requests import Refund
 from request_status import RequestStatus
 from serial_number import SerialNumber
 
@@ -43,9 +43,38 @@ class AbstractProduct(object):
         """Enforce the abstract quality of AbstractProduct"""
         raise NotImplementedError
     
-    def process(request, status):
+    def process(self, request, status):
+        """Delegate request processing to the appropriate method"""
+        if request is Exchange:
+            self.processExchange(request, status)
+        elif request is Refund:
+            self.processRefund(request, status)
+        else:
+            raise ProductError(ProductType.OPOD, self.serial_number,
+                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
+
+    def processExchange(self, exchange, status):
         """Implement this in subclasses"""
         raise NotImplementedError
+
+    def processRefund(self, refund, status):
+        """Implement this in subclasses"""
+        raise NotImplementedError
+
+    @staticmethod
+    def discardLesserElements(self, serial_set, min_val):
+        """
+        Remove from a SerialNumber set all elements below a minimum value
+        """
+        for candidate in serial_set:
+            if candidate < min_val:
+                serial_set.discard(candidate)
+        return serial_set
+
+    @staticmethod
+    def computeSerialSetMean(self, serial_set):
+        """Compute the average of a SerialNumber set"""
+        return sum(s.serial_number for s in serial_set) / len(serial_set)
 
     @staticmethod
     def make(product_type, serial_number, description=None):
@@ -79,14 +108,25 @@ class Opod(AbstractProduct):
                     out += "\n" + d.capitalize()
         return out
 
-    def process(request, status):
-        """Be useless for the time being"""
-        if request is Exchange:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
-        elif request is Refund:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
+    def processExchange(self, exchange, status):
+        """Process exchanges"""
+
+        serial_set = get_compatible_products()
+
+        if serial_set:
+            status = request_status.OK
+            self.serial_number = serial_set.pop()
+
+    def processRefund(self, refund, status):
+        """Process refunds"""
+
+        GCD_MIN = 24
+
+        if self.serial_number.gcd(refund.rma) >= GCD_MIN:
+            status = request_status.OK
+            self.serial_number = None
+        else:
+            pass # I'd like to raise an exception, but one isn't specified
 
     @staticmethod
     def is_valid_serial_number(serial_number):
@@ -116,14 +156,30 @@ class Opad(AbstractProduct):
                     out += "\n" + d.capitalize()
         return out
     
-    def process(request, status):
-        """Be useless for the time being"""
-        if request is Exchange:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
-        elif request is Refund:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
+    def processExchange(self, exchange, status):
+        """Process exchanges"""
+
+        serial_set = exchange.get_compatible_products()
+        best_fit_serial = SerialNumber(0)
+
+        for candidate in serial_set:
+            if  best_fit_serial < candidate < self.serial_number:
+                best_fit_serial = candidate
+
+        if best_fit_serial > SerialNumber(0):
+            status = request_status.OK
+            self.serial_number = best_fit_serial
+
+    def processRefund(self, refund, status):
+        """Process refunds"""
+
+        GCD_MIN = 12
+
+        if self.serial_number.gcd(request.rma) >= GCD_MIN:
+            status = request_status.OK
+            self.serial_number = None
+        else:
+            pass # I'd like to raise an exception, but one isn't specified
 
     @staticmethod
     def is_valid_serial_number(serial_number):
@@ -154,14 +210,32 @@ class Ophone(AbstractProduct):
                     out += "\n" + d.capitalize()
         return out
     
-    def process(request, status):
-        """Be useless for the time being"""
-        if request is Exchange:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
-        elif request is Refund:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
+    def processExchange(self, exchange, status):
+        """Process exchanges"""
+
+        serial_set = Product.discardLesserElements( \
+            exchange.get_compatible_products(), self.serial_number)
+
+        average = Product.computeSerialSetMean(serial_set)
+        best_fit_serial = self.serial_number
+
+        for candidate in serial_set:
+            if  best_fit_serial < candidate < average:
+                best_fit_serial = candidate
+        if best_fit_serial > self.serial_number:
+            status = request_status.OK
+            self.serial_number = best_fit_serial
+
+    def processRefund(self, refund, status):
+        """Process refunds"""
+        # make three attempts at bit shifting
+        for n in range(3):
+            if refund.rma << n + 1 == self.serial_number:
+                status = request_status.OK
+                self.serial_number = None
+                break
+        else:
+            pass # I'd like to raise an exception, but one isn't specified
 
     @staticmethod
     def is_valid_serial_number(serial_number):
@@ -193,14 +267,30 @@ class Owatch(AbstractProduct):
                     out += "\n" + d.capitalize()
         return out
     
-    def process(request, status):
-        """Be useless for the time being"""
-        if request is Exchange:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
-        elif request is Refund:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
+    def processExchange(self, exchange, status):
+        """Process exchanges"""
+
+        serial_set = exchange.get_compatible_products()
+        best_fit_serial = self.serial_number
+
+        for candidate in serial_set:
+            if  self.serial_number < candidate < best_fit_serial:
+                best_fit_serial = candidate
+
+        if best_fit_serial > self.serial_number:
+            status = request_status.OK
+            self.serial_number = best_fit_serial
+
+    def processRefund(self, refund, status):
+        """Process refunds"""
+
+        XOR_MIN = 14
+
+        if self.serial_number.serial_number ^ refund.rma > XOR_MIN:
+            status = request_status.OK
+            self.serial_number = None
+        else:
+            pass # I'd like to raise an exception, but one isn't specified
 
     @staticmethod
     def is_valid_serial_number(serial_number):
@@ -233,14 +323,28 @@ class Otv(AbstractProduct):
                     out += "\n" + d.capitalize()
         return out
     
-    def process(request, status):
-        """Be useless for the time being"""
-        if request is Exchange:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
-        elif request is Refund:
-            raise ProductError(ProductType.OPOD, self.serial_number,
-                               ProductError.ErrorCode.UNSUPPORTED_OPERATION)
+    def processExchange(self, exchange, status):
+        """Process exchanges"""
+
+        serial_set = Product.discardLesserElements( \
+            exchange.get_compatible_products(), self.serial_number)
+        average = Product.computeSerialSetMean(serial_set)
+        best_fit_serial = self.serial_number
+
+        for candidate in serial_set:
+            if  best_fit_serial < candidate <= self.serial_number + 1024:
+                best_fit_serial = candidate
+        if best_fit_serial > self.serial_number:
+            status = request_status.OK
+            self.serial_number = best_fit_serial
+
+    def processRefund(self, refund, status):
+        """Process refunds"""
+        if refund.rma > 0:
+            status = request_status.OK
+            self.serial_number = None
+        else:
+            pass # I'd like to raise an exception, but one isn't specified
 
     @staticmethod
     def is_valid_serial_number(serial_number):

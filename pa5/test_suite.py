@@ -4,8 +4,6 @@
 
 import unittest
 
-from exchange import Exchange
-
 from product_error import ProductError
 
 from product_type import ProductType
@@ -17,11 +15,11 @@ from products import Ophone
 from products import Owatch
 from products import Otv
 
-from request import Request
+from requests import Exchange
+from requests import Refund
+from requests import Request
 
 from request_error import RequestError
-
-from refund import Refund
 
 from serial_number import SerialNumber
 
