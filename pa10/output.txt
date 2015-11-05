@@ -1,0 +1,6 @@
+     27.254.44.45, server-1.gencfb.org, insynq-1.border2.sef003.pnap.net,\
+     58.137.72.110, host148-68-static.115-2-b.business.telecomitalia.it,\
+     43.255.188.161, ip-50-62-42-229.ip.secureserver.net,\
+     ip-50-63-56-230.ip.secureserver.net,\
+     a.fake.domain.that.exceeds0080-characters.biz.xxx.mp3.spam.attacker.malware.fun.ru,\
+     96.153.175.59.broad.wh.hb.dynamic.163data.com.cn

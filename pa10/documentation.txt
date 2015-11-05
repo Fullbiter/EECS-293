@@ -1,0 +1,40 @@
+Kevin Nash (kjn33)
+EECS 293
+Assignment 10
+
+I.  Instructions
+
+    A.  A Makefile that runs the script is included.
+
+    B.  blacklist.py takes stdin and an optional integer parameter
+
+II. Error Handling
+
+    A.  print_blacklist()
+
+        Error:      stdin is empty
+        Handling:   ValueError is raised
+
+    B.  _get_attempts()
+
+        No errors. If no input matches target regex,
+        an empty dictionary is returned.
+
+    C.  _combine_dicts()
+
+        No errors. If the second dictionary is empty,
+        the first is returned unchanged.
+
+    D.  _filter_dict()
+
+        Error:      __get_threshold() returns unexpected data
+        Handling:   None, reliant on __get_threshold() to behave as expected
+
+    E.  _get_threshold()
+
+        Error:      input threshold is not parsable as an integer
+        Handling:   ValueError is raised
+
+    F.  _join_users()
+
+        No errors. Empty input returns blank output.

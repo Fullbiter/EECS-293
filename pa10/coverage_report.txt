@@ -1,0 +1,3 @@
+Name           Stmts   Miss Branch BrPart  Cover
+------------------------------------------------
+blacklist.py      67      4     34      7    89%
